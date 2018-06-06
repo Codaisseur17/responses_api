@@ -5,6 +5,7 @@
   "repository": "git@github.com:Codaisseur17/responses_api.git",
   "author": "Zsuzsi Hudacsko <zsuzsi.hudacsko@gmail.com>",
   "license": "MIT",
+  "dev": "nodemon --inspect .",
   "scripts": {
     "start": "node .",
     "test": "node_modules/.bin/mocha --require ts-node/register src/**/*.spec.ts",
