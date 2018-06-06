@@ -1,5 +1,5 @@
 import { JsonController, Post, HttpCode, Body, Param, Get } from 'routing-controllers'
-import Responses from './entity'
+import {Responses, Questions } from './entity'
 // import Questions from '../quizzes/src/controller'
 
 @JsonController()
@@ -12,6 +12,14 @@ export default class ResponsesController {
   ) {
     return response.save()
   }
+
+@Post('/questions')   
+@HttpCode(201)
+async newQuestion(
+    @Body() questions: Questions
+) {
+  return questions.save()
+}
 }
 
 // @Get('/questions/:id')
