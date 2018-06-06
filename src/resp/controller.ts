@@ -1,5 +1,6 @@
 import { JsonController, Post, HttpCode, Body, Param, Get } from 'routing-controllers'
 import Responses from './entity'
+// import Questions from '../quizzes/src/controller'
 
 @JsonController()
 export default class ResponsesController {
@@ -11,15 +12,23 @@ export default class ResponsesController {
   ) {
     return response.save()
   }
+}
 
-  @Get('/questions/:id')
-async getCorrectAnswers(
-@Param('id') id:number
-) {
-return Questions.findOne(id)
-}
-Object.entries(Questions)[1][1].map(value => value.correct_answer)
-// console.log(array)
-// console.log(value)
-}
-}
+// @Get('/questions/:id')
+// async getCorrectAnswers(
+// @Param('id') quizId: number
+// ) {
+//   const question = await Questions.findOne(quizId)
+//   }
+
+
+// @Patch('/responses/:id')
+// giveScore(
+//   @Param('id') id: number,
+//   @Body() body: Partial<Response>
+// ) {
+//   const 
+// }
+// }
+
+// Object.entries(Questions)[1][1].map(value => value.correctAnswer)
