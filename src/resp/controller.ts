@@ -38,6 +38,7 @@ export default class ResponsesController {
     console.log(meow)
     return {meow}
     }
+<<<<<<< HEAD
   }
 
   // @Get('/responses/user/:user_id')
@@ -82,6 +83,17 @@ export default class ResponsesController {
 // }
 // }
 
+=======
+
+@Get('/responses')
+ async getResponse(
+ ) {
+    const responses = await Responses.find()
+    const bark = responses[0]['input'].map(value => value.userAnswer)
+    console.log(bark, "bye")
+>>>>>>> 3c9feb10ea95d974c18d5081b4d9eabe7a70ae0d
 
 
-// .map(value => value.correctAnswer)
+    return {responses}
+ }
+}
