@@ -84,7 +84,7 @@ score = uniqueArray.length
 console.log(score, "hello")
 return {score}
 }
-// response[0].score = update.update.score
+response[0].score = update.update.score
 // console.log(response[0],"RESPONSE NEW")
 
 console.log(findMatch(meow,bark), "what")
@@ -98,5 +98,4 @@ return await response[0].save()
 
 }
 
-
-/// http patch :4002/responses/1 update:='{"id": 4,"input": [{"id": 1,"userAnswer": "C"},{"id": 2,"userAnswer": "C"},{"id": 3,"userAnswer": "D"}],"quizId": 1,"userId": 1, "score":2 }'
+// http patch :4002/responses/1 update:='{"id": 4,"input": [{"id": 1,"userAnswer": "C"},{"id": 2,"userAnswer": "C"},{"id": 3,"userAnswer": "D"}],"quizId": 1,"userId": 1, "score":2 }'
