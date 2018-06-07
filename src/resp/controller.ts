@@ -34,8 +34,12 @@ export default class ResponsesController {
     @Param('quizId') quizId: number
   ){
     const quiz = await Questions.find({where: {quizId}})
-    if (!quiz) throw new NotFoundError('Cannot find quiz')
+
     const meow = quiz.map(value => value.correctAnswer)
+
+    if (!quiz) throw new NotFoundError('Cannot find quiz')
+
+  
     console.log(meow)
     return {meow}
     }
