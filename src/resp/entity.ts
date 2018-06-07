@@ -7,17 +7,17 @@ export class Responses extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @Column('int' )
+  @Column('int', {nullable: true})
   userId: number
 
-  @Column('int')
+  @Column('int', {nullable: true})
   quizId: number
 
-  @Column('json')
+  @Column('json', {nullable: true})
   input: string[][]
 
-  @Column('text', {nullable: true})
-  score: string
+  @Column('int', {nullable: true})
+  score: number
 }
 
 @Entity()
