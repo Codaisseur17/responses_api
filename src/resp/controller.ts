@@ -49,4 +49,16 @@ export default class ResponsesController {
 
     return {responses}
  }
+
+ @Get('/responses/:quizId')
+ async getResponseById(
+  @Param('quizId') quizId: number
+ ) {
+    const response = await Responses.find({where: {quizId}})
+    const bark = response[0]['input'].map(value => value.userAnswer)
+    console.log(bark, "bye")
+
+
+    return {response}
+ }
 }
