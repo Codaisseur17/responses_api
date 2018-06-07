@@ -1,5 +1,8 @@
 import { JsonController, Post, HttpCode, Body, Param, Get, Patch, NotFoundError } from 'routing-controllers'
 import {Responses, Questions } from './entity'
+import * as request from 'superagent'
+
+const quizzesUrl = process.env.USERS_URL || 'http://quizzes:4001'
 
 @JsonController()
 export default class ResponsesController {
@@ -9,9 +12,22 @@ export default class ResponsesController {
 async newResponse(
 @Body() response: Responses
 ) {
-const newReponse = await Responses.create(response).save()
+  const quiz = await request
+      .get(`${quizzesUrl}/${response.quizId}`)
+      .catch(error => console.log(error))
 
-return response.save()
+      const newReponse = await Responses.create(response).save()
+      const responses = response.input
+      const questions = quiz.questions
+
+// questions.map(question => {
+//   question.id[]
+// })
+
+    console.log(`responses: ${responses}`)
+    console.log(`questions: ${questions}`)
+
+return newReponse.save()
 }
 
 @Post('/questions')
@@ -67,34 +83,34 @@ return acc;
 }, {});
 console.log(responseobj[0].input[0].userAnswer, "sup")
 // if(!response[0].input.userAnswer) throw new NotFoundError
-const bark = responseobj[0].input.map(value => value.userAnswer)
-console.log(bark, "whatsupp")
-const findMatch = (meow, bark) => {
-let res:any = []
-for (let i = 0; i < meow.length; i++) {
-if (meow[i] === bark[i]) {
-res.push(i);
-console.log(res, "whaaat")
+// const bark = response[0].input.map(value => value.userAnswer)
+// console.log(bark, "whatsupp")
+// const findMatch = (meow, bark) => {
+// let res:any = []
+// for (let i = 0; i < meow.length; i++) {
+// if (meow[i] === bark[i]) {
+// res.push(i);
+// console.log(res, "whaaat")
+// }
 }
-}
-const uniqueArray = res.map(function(index) {
-return meow[index]
-})
-score = uniqueArray.length
-console.log(score, "hello")
-return {score}
-}
-response[0].score = update.update.score
-// console.log(response[0],"RESPONSE NEW")
+// const uniqueArray = res.map(function(index) {
+// return meow[index]
+// })
+// score = uniqueArray.length
+// console.log(score, "hello")
+// return {score}
+// }
+// response[0].score = update.update.score
+// // console.log(response[0],"RESPONSE NEW")
 
-console.log(findMatch(meow,bark), "what")
+// console.log(findMatch(meow,bark), "what")
 
-return await response[0].save()
-// return Responses.merge(score, update)
+// return await response[0].save()
+// // return Responses.merge(score, update)
 
 
 // return {score}
-}
+// }
 
 }
 
