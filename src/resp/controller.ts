@@ -84,8 +84,8 @@ score = uniqueArray.length
 console.log(score, "hello")
 return {score}
 }
-response[0].score = update.update.score
-console.log(response[0],"RESPONSE NEW")
+// response[0].score = update.update.score
+// console.log(response[0],"RESPONSE NEW")
 
 console.log(findMatch(meow,bark), "what")
 
