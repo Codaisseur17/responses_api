@@ -16,79 +16,71 @@ export default class ResponsesController {
 @Post('/questions')
 @HttpCode(201)
   async newQuestion(
-  @Body() questions: Questions
+@Body() questions: Questions
 ) {
-  return questions.save()
+return questions.save()
 }
 @Get('/questions')
   async getCorrectAnswers() {
   const quizzes = await Questions.find()
-  // const meows = quizzes.map(value => value.correctAnswer)
   return {quizzes}
 }
 
 @Get('/questions/:quizId')
   async getQuestionByQuiz(
-  @Param('quizId') quizId: number
+@Param('quizId') quizId: number
 ){
   const quiz = await Questions.find({where: {quizId}})
-  // const meow = quiz.map(value => value.correctAnswer)
-  // console.log(meow)
-return {quiz}
+  return {quiz}
 }
 
 @Get('/responses')
   async getResponse(
 ) {
   const responses = await Responses.find()
-  // const barks = responses[0]['input'].map(value => value.userAnswer)
-  // console.log(barks, "bye")
-return {responses}
+  return {responses}
 }
 
 @Get('/responses/:quizId')
   async getResponseById(
-  @Param('quizId') quizId: number
+@Param('quizId') quizId: number
 ) {
   const response = await Responses.find({where: {quizId}})
-  // const bark = response[0]['input'].map(value => value.userAnswer)
-  // console.log(bark, "bye")
-return {response}
+  return {response}
 }
 
 @Get('/responses/:quizId')
   async giveScoreById(
-    @Param('quizId') quizId: number,
-    @Body() update: Partial<Responses>
-  ) {
-    const quiz = await Questions.find({where: {quizId}})
-    const meow = quiz.map(value => value.correctAnswer)
-    // console.log(meow, "hello")
-    
-    const response = await Responses.find({where: {quizId}})
-    const bark = response[0]['input'].map(value => value.userAnswer)
-    // console.log(bark, "bye")
+@Param('quizId') quizId: number,
+@Body() update: Partial<Response>
+) {
+  let score
+  const quiz = await Questions.find({where: {quizId}})
+  const meow = quiz.map(value => value.correctAnswer)
 
-    const findMatch = (meow, bark) => {
-      let res = []
-        for (var i = 0; i < meow.length; i++) {
-          if (meow[i] === bark[i]) {
-              res.push(i);
-          }
-        }
-      var uniqueArray = res.map(function(index) {
-      return meow[index]
-      })
-      const score =  uniqueArray.length
-      console.log(score, "hello")
-    }
+  const response = await Responses.find({where: {quizId}})
+  const bark = response[0]['input'].map(value => value.userAnswer)
 
-    console.log(findMatch(meow,bark), "what")
+  const findMatch = (meow, bark) => {
+  let res = []
+    for (var i = 0; i < meow.length; i++) {
+      if (meow[i] === bark[i]) {
+    res.push(i);
+    // console.log(res)
+  }
+}
+  const uniqueArray = res.map(function(index) {
+    return meow[index]
+  })
+  score = uniqueArray.length
+  // console.log(score, "hello")
+  return score
+  }
 
-    
-    return {meow, bark}
+  console.log(findMatch(meow,bark), "what")
+  return {score}
+  // return Response.merge({score}, update).save()
   }
 
 }
 
-//Response.merge(response, update).save()
