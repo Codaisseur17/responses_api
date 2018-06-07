@@ -2,7 +2,7 @@ import { JsonController, Post, HttpCode, Body, Param, Get, Patch, NotFoundError 
 import {Responses, Questions } from './entity'
 import * as request from 'superagent'
 
-const quizzesUrl = process.env.USERS_URL || 'http://quizzes:4001'
+const quizzesUrl = process.env.QUIZZES_URL || 'http://quizzes:4001'
 
 @JsonController()
 export default class ResponsesController {
@@ -12,22 +12,30 @@ export default class ResponsesController {
 async newResponse(
 @Body() response: Responses
 ) {
+  const newReponse = await Responses.create(response).save()
+
   const quiz = await request
-      .get(`${quizzesUrl}/${response.quizId}`)
+      .get(`${quizzesUrl}/quizzes/${response.quizId}`)
+      .end()
       .catch(error => console.log(error))
 
-      const newReponse = await Responses.create(response).save()
+      // console.log(request, "meow")
+
+      // const newReponse = await Responses.create(response).save()
       const responses = response.input
-      const questions = quiz.questions
+      // const questions = quiz.questions
+      console.log(response.request.input, "i did this!")
 
-// questions.map(question => {
-//   question.id[]
-// })
+// const score = responses.map(res => {
+//   res.userAnswer === questions.find(element => element.id === res.id).correctAnswer ? 1 : 0
+// }).reduce((a,b) => {a + b}, 0)
 
-    console.log(`responses: ${responses}`)
-    console.log(`questions: ${questions}`)
+// console.log(score)
 
-return newReponse.save()
+    // console.log(`responses: ${JSON.stringify(responses)}`)
+    // console.log(`questions: ${JSON.stringify(questions)}`)
+
+return { quiz }
 }
 
 @Post('/questions')
@@ -37,6 +45,8 @@ async newQuestion(
 ) {
 return questions.save()
 }
+
+
 @Get('/questions')
 async getCorrectAnswers() {
 const quizzes = await Questions.find()

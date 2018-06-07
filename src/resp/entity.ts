@@ -14,7 +14,7 @@ export class Responses extends BaseEntity {
   quizId: number
 
   @Column('json', {nullable: true})
-  input: string[][]
+  input: any
 
   @Column('int', {nullable: true})
   score: number
