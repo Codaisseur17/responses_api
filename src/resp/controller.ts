@@ -65,10 +65,10 @@ var responseobj = response.reduce(function(acc, cur, i) {
 acc[i] = cur;
 return acc;
 }, {});
-console.log(responseobj[0].input[0].userAnswer)
+console.log(responseobj[0].input[0].userAnswer, "sup")
 // if(!response[0].input.userAnswer) throw new NotFoundError
 const bark = responseobj[0].input.map(value => value.userAnswer)
-console.log(bark)
+console.log(bark, "whatsupp")
 const findMatch = (meow, bark) => {
 let res:any = []
 for (let i = 0; i < meow.length; i++) {
