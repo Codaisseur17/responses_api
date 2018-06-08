@@ -4,7 +4,8 @@ import {
   HttpCode,
   Body,
   Param,
-  Get
+  Get,
+  HttpError
   //   Patch
   //   NotFoundError
 } from 'routing-controllers'
@@ -12,6 +13,23 @@ import { Responses, Questions } from './entity'
 import * as request from 'superagent'
 
 const quizzesUrl = process.env.QUIZZES_URL || 'http://quizzes:4001'
+
+class WebHookError extends HttpError {
+  public message: string
+  public args: any[]
+  constructor(message: string, args: any[] = []) {
+    super(503)
+    Object.setPrototypeOf(this, WebHookError.prototype)
+    this.message = message
+    this.args = args
+  }
+  toJSON() {
+    return {
+      statusCode: this.httpCode,
+      message: this.message,
+    }
+  }
+}
 
 @JsonController()
 export default class ResponsesController {
@@ -41,6 +59,40 @@ export default class ResponsesController {
     const newResponse = await Responses.create(response).save()
 
     newResponse.score = score
+
+
+    const hookResult = {
+      quizId: response.quizId,
+      userId: response.userId,
+      score
+    }
+    const webHookUrl = 'http://localhost:4004/reshook'
+    let forwardErr
+    // have to be async for err check
+    await request
+      .post(webHookUrl)
+      .send(hookResult)
+      .then(res => {
+        // incoming response from webHook
+        console.log(res.text)
+      })
+      .catch(err => {
+        // incoming error from webHook
+        forwardErr = err
+        console.log(err)
+      })
+    
+      // check for forwardErr, return based on that
+      if (!forwardErr) {
+        return {
+          message: `quiz results successfully forwarded to webhook API`,
+          sentTo: webHookUrl,
+          hookResult,
+        }
+      } else {
+        throw new WebHookError('data forwarding to webhook API failed')
+      }
+
 
     return newResponse.save()
   }
@@ -81,7 +133,6 @@ export default class ResponsesController {
   //     let score
   //     const quiz = await Questions.find({ where: { quizId } })
   //     const meow = quiz.map(value => value.correctAnswer)
-
   //     const response = await Responses.find({ where: { quizId } })
   //     var responseobj = response.reduce(function(acc, cur, i) {
   //       acc[i] = cur
@@ -108,12 +159,9 @@ export default class ResponsesController {
   //   }
   //   response[0].score = update.update.score
   //   // console.log(response[0],"RESPONSE NEW")
-
   //   console.log(findMatch(meow,bark), "what")
-
   //   return await response[0].save()
   //   // return Responses.merge(score, update)
-
   //   return {score}
   //   }
 }
