@@ -26,7 +26,7 @@ class WebHookError extends HttpError {
   toJSON() {
     return {
       statusCode: this.httpCode,
-      message: this.message,
+      message: this.message
     }
   }
 }
@@ -36,6 +36,8 @@ export default class ResponsesController {
   @Post('/responses')
   @HttpCode(201)
   async newResponse(@Body() response: Responses) {
+    console.log('Response post received.')
+
     const questions = await request
       .get(`${quizzesUrl}/quizzes/${response.quizId}`)
       .then(result => {
@@ -47,8 +49,15 @@ export default class ResponsesController {
 
     const score = responses
       .map(res => {
+        console.log(`Response id: ${res.id}`)
+        console.log(
+          `Questions id: ${questions.find(
+            element => parseInt(element.id) == res.id
+          )}`
+        )
         return res.userAnswer ===
-          questions.find(element => element.id === res.id).correctAnswer
+          questions.find(element => parseInt(element.id) == res.id)
+            .correctAnswer
           ? 1
           : 0
       })
@@ -60,13 +69,13 @@ export default class ResponsesController {
 
     newResponse.score = score
 
-
     const hookResult = {
       quizId: response.quizId,
       userId: response.userId,
       score
     }
-    const webHookUrl = process.env.WEBHOOKS_URL || 'http://webhooks:4004/reshook'
+    const webHookUrl =
+      process.env.WEBHOOKS_URL || 'http://webhooks:4004/reshook'
     let forwardErr
     // have to be async for err check
     await request
@@ -81,19 +90,18 @@ export default class ResponsesController {
         forwardErr = err
         console.log(err)
       })
-    
-      // check for forwardErr, return based on that
-      if (!forwardErr) {
-        return {
-          message: `quiz results successfully forwarded to webhook API`,
-          sentTo: webHookUrl,
-          hookResult,
-        }
-      } else {
-        throw new WebHookError('data forwarding to webhook API failed')
+
+    // check for forwardErr, return based on that
+    if (!forwardErr) {
+      return {
+        message: `quiz results successfully forwarded to webhook API`,
+        sentTo: webHookUrl,
+        hookResult
       }
-
-
+    } else {
+      throw new WebHookError('data forwarding to webhook API failed')
+    }
+    console.log(`newResponse: ${newResponse}`)
     return newResponse.save()
   }
 
