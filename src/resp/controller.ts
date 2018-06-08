@@ -4,8 +4,8 @@ import {
   HttpCode,
   Body,
   Param,
-  Get,
-  HttpError
+  Get
+  // HttpError
   //   Patch
   //   NotFoundError
 } from 'routing-controllers'
@@ -14,22 +14,22 @@ import * as request from 'superagent'
 
 const quizzesUrl = process.env.QUIZZES_URL || 'http://quizzes:4001'
 
-class WebHookError extends HttpError {
-  public message: string
-  public args: any[]
-  constructor(message: string, args: any[] = []) {
-    super(503)
-    Object.setPrototypeOf(this, WebHookError.prototype)
-    this.message = message
-    this.args = args
-  }
-  toJSON() {
-    return {
-      statusCode: this.httpCode,
-      message: this.message
-    }
-  }
-}
+// class WebHookError extends HttpError {
+//   public message: string
+//   public args: any[]
+//   constructor(message: string, args: any[] = []) {
+//     super(503)
+//     Object.setPrototypeOf(this, WebHookError.prototype)
+//     this.message = message
+//     this.args = args
+//   }
+//   toJSON() {
+//     return {
+//       statusCode: this.httpCode,
+//       message: this.message
+//     }
+//   }
+// }
 
 @JsonController()
 export default class ResponsesController {
@@ -76,7 +76,7 @@ export default class ResponsesController {
     }
     const webHookUrl =
       process.env.WEBHOOKS_URL || 'http://webhooks:4004/reshook'
-    let forwardErr
+    // let forwardErr
     // have to be async for err check
     await request
       .post(webHookUrl)
@@ -87,20 +87,20 @@ export default class ResponsesController {
       })
       .catch(err => {
         // incoming error from webHook
-        forwardErr = err
+        // forwardErr = err
         console.log(err)
       })
 
     // check for forwardErr, return based on that
-    if (!forwardErr) {
-      return {
-        message: `quiz results successfully forwarded to webhook API`,
-        sentTo: webHookUrl,
-        hookResult
-      }
-    } else {
-      throw new WebHookError('data forwarding to webhook API failed')
-    }
+    // if (!forwardErr) {
+    //   return {
+    //     message: `quiz results successfully forwarded to webhook API`,
+    //     sentTo: webHookUrl,
+    //     hookResult
+    //   }
+    // } else {
+    //   throw new WebHookError('data forwarding to webhook API failed')
+    // }
     console.log(`newResponse: ${newResponse}`)
     return newResponse.save()
   }
