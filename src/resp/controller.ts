@@ -1,4 +1,4 @@
-import { JsonController, Post, HttpCode, Body, Param, Get, Patch, NotFoundError } from 'routing-controllers'
+import { JsonController, Post, HttpCode, Body, Param, Get } from 'routing-controllers'
 import {Responses, Questions } from './entity'
 import * as request from 'superagent'
 
@@ -12,19 +12,20 @@ export default class ResponsesController {
 async newResponse(
 @Body() response: Responses
 ) {
-  const newReponse = await Responses.create(response).save()
+  const resp = await Responses.create(response).save()
 
   const quiz = await request
-      .get(`${quizzesUrl}/quizzes/${response.quizId}`)
+      .get(`${quizzesUrl}/quizzes/${resp.quizId}`)
       .end()
       .catch(error => console.log(error))
 
-      // console.log(request, "meow")
+
 
       // const newReponse = await Responses.create(response).save()
-      const responses = response.input
+      const whaat = resp[0][1]
+      console.log(whaat, "meowoowow")
       // const questions = quiz.questions
-      console.log(response.request.input, "i did this!")
+      // console.log(response.request.input, "i did this!")
 
 // const score = responses.map(res => {
 //   res.userAnswer === questions.find(element => element.id === res.id).correctAnswer ? 1 : 0
@@ -35,7 +36,7 @@ async newResponse(
     // console.log(`responses: ${JSON.stringify(responses)}`)
     // console.log(`questions: ${JSON.stringify(questions)}`)
 
-return { quiz }
+return { resp, quiz }
 }
 
 @Post('/questions')
@@ -76,22 +77,22 @@ const response = await Responses.find({where: {quizId}})
 return {response}
 }
 
-@Patch('/responses/:quizId')
-async giveScoreById(
-@Param('quizId') quizId: number,
-@Body() update: any
-) {
-console.log(update,"<---update")
-let score
-const quiz = await Questions.find({where: {quizId}})
-const meow = quiz.map(value => value.correctAnswer)
+// @Patch('/responses/:quizId')
+// async giveScoreById(
+// @Param('quizId') quizId: number,
+// @Body() update: any
+// ) {
+// console.log(update,"<---update")
+// let score
+// const quiz = await Questions.find({where: {quizId}})
+// const meow = quiz.map(value => value.correctAnswer)
 
-const response = await Responses.find({where: {quizId}})
-var responseobj = response.reduce(function(acc, cur, i) {
-acc[i] = cur;
-return acc;
-}, {});
-console.log(responseobj[0].input[0].userAnswer, "sup")
+// const response = await Responses.find({where: {quizId}})
+// var responseobj = response.reduce(function(acc, cur, i) {
+// acc[i] = cur;
+// return acc;
+// }, {});
+// console.log(responseobj[0].input[0].userAnswer, "sup")
 // if(!response[0].input.userAnswer) throw new NotFoundError
 // const bark = response[0].input.map(value => value.userAnswer)
 // console.log(bark, "whatsupp")
@@ -122,6 +123,6 @@ console.log(responseobj[0].input[0].userAnswer, "sup")
 // return {score}
 // }
 
-}
+// }
 
 // http patch :4002/responses/1 update:='{"id": 4,"input": [{"id": 1,"userAnswer": "C"},{"id": 2,"userAnswer": "C"},{"id": 3,"userAnswer": "D"}],"quizId": 1,"userId": 1, "score":2 }'
