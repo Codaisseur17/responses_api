@@ -66,7 +66,7 @@ export default class ResponsesController {
       userId: response.userId,
       score
     }
-    const webHookUrl = 'http://localhost:4004/reshook'
+    const webHookUrl = process.env.WEBHOOKS_URL || 'http://webhooks:4004/reshook'
     let forwardErr
     // have to be async for err check
     await request
